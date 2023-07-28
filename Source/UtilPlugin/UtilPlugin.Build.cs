@@ -27,6 +27,8 @@ public class UtilPlugin : ModuleRules
 			{
 				"Core",
 				// ... add other public dependencies that you statically link with here ...
+				"InputCore",
+				"RHI",
 			}
 			);
 			
@@ -39,6 +41,10 @@ public class UtilPlugin : ModuleRules
 				"Slate",
 				"SlateCore",
 				// ... add private dependencies that you statically link with here ...	
+				"OpenCVHelper",
+                "OpenCV",
+				"ImageWrapper",
+				"RenderCore",
 			}
 			);
 		
