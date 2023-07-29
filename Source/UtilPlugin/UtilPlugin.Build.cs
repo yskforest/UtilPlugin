@@ -45,6 +45,7 @@ public class UtilPlugin : ModuleRules
                 "OpenCV",
 				"ImageWrapper",
 				"RenderCore",
+				"ROSIntegration",
 			}
 			);
 		
