@@ -12,6 +12,7 @@ ACamCV::ACamCV()
 		RootComponent = CreateDefaultSubobject<USceneComponent>("Root");
 
     ImagePub = CreateDefaultSubobject<UImagePub>(TEXT("ImagePub"));
+	TFPub = CreateDefaultSubobject<UTFPub>(TEXT("TFPub"));
 }
 
 // Called when the game starts or when spawned
@@ -69,6 +70,7 @@ void ACamCV::Tick(float DeltaTime)
 		FrameCount += 1;
 
 		ImagePub->Publish(w, h, front.data);
+		TFPub->Publish();
 
 		// UE_5.2\Engine\Plugins\Runtime\OpenCV\Source\OpenCVHelper\Private\OpenCVHelper.cpp
 		// FOpenCVHelper::TextureFromCvMat(front, TextureCV);

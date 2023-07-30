@@ -17,28 +17,54 @@ void UTFPub::BeginPlay()
 	OwnerActor = GetOwner();
 
 	UROSIntegrationGameInstance* rosinst = Cast<UROSIntegrationGameInstance>(GetOwner()->GetGameInstance());
-	TFPublisher->Init(rosinst->ROSIntegrationCore, TFTopicName, TEXT("geometry_msgs/Transfrom"));
+	if (!rosinst) {
+		UE_LOG(LogTemp, Warning, TEXT("UROSIntegrationGameInstance is not set"));
+		return;
+	}
+
+	TFPublisher = NewObject<UTopic>(UTopic::StaticClass());
+	TFPublisher->Init(rosinst->ROSIntegrationCore, TFTopicName, TEXT("geometry_msgs/Transform"));
+	TFPublisher->Advertise();
+	LocPublisher = NewObject<UTopic>(UTopic::StaticClass());
+	LocPublisher->Init(rosinst->ROSIntegrationCore, LocTopicName, TEXT("geometry_msgs/Vector3"));
+	LocPublisher->Advertise();
+	RotPublisher = NewObject<UTopic>(UTopic::StaticClass());
+	RotPublisher->Init(rosinst->ROSIntegrationCore, RotTopicName, TEXT("geometry_msgs/Vector3"));
+	RotPublisher->Advertise();
 }
 
 void UTFPub::Publish()
 {
-	// FVector Location = GetComponentLocation();
-	// FQuat Rotation = GetComponentQuat();
-	// FVe
+	if (!TFPublisher)
+		return;
 
-	// FVector Location = OwnerActor->GetActorLoction();
-	// FQuat Rotation = OwnerActor->GetActorQuat();
+	FVector location = OwnerActor->GetActorLocation();
+	// Convert to meters and ROS coordinate system
+	double x = location.X / 100.0f;
+	double y = -location.Y / 100.0f;
+	double z = location.Z / 100.0f;
+	// FQuat quat = OwnerActor->GetActorQuat();
+	// double rx = -quat.X;
+	// double ry = quat.Y;
+	// double rz = -quat.Z;
+	// double rw = quat.W;
 
-	// // Convert to meters and ROS coordinate system
-	// double x = Location.X / 100.0f;
-	// double y = -Location.Y / 100.0f;
-	// double z = Location.Z / 100.0f;
-	// double rx = -Rotation.X;
-	// double ry = Rotation.Y;
-	// double rz = -Rotation.Z;
-	// double rw = Rotation.W;
+	TSharedPtr<ROSMessages::geometry_msgs::Vector3> locMsg(new ROSMessages::geometry_msgs::Vector3());
+	locMsg->x = x;
+	locMsg->y = y;
+	locMsg->z = z;
+	LocPublisher->Publish(locMsg);
 
-	// TSharedPtr<ROSMessages::geometry_mags::Transform> TFMsg(new ROSMessages::geometry_mags::Transform());
+	FRotator rotation =OwnerActor->GetActorRotation();
+	// 座標系変換無考慮
+	TSharedPtr<ROSMessages::geometry_msgs::Vector3> rotMsg(new ROSMessages::geometry_msgs::Vector3());
+	rotMsg->x = rotation.Roll;
+	rotMsg->y = rotation.Pitch;
+	rotMsg->z = rotation.Yaw;
+	RotPublisher->Publish(rotMsg);
+
+	// Transformなぜか送信できない
+	// TSharedPtr<ROSMessages::geometry_msgs::Transform> TFMsg(new ROSMessages::geometry_msgs::Transform());
 	// TFMsg->translation.x = x;
 	// TFMsg->translation.y = y;
 	// TFMsg->translation.z = z;
@@ -46,6 +72,6 @@ void UTFPub::Publish()
 	// TFMsg->rotation.y = ry;
 	// TFMsg->rotation.z = rz;
 	// TFMsg->rotation.w = rw;
-
+	// // UE_LOG(LogTemp, Log, TEXT("tf: %f,%f,%f"), x, y, z);
 	// TFPublisher->Publish(TFMsg);
 }

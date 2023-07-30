@@ -18,6 +18,10 @@ void UImagePub::BeginPlay()
 	Super::BeginPlay();
 
 	UROSIntegrationGameInstance* rosinst = Cast<UROSIntegrationGameInstance>(GetOwner()->GetGameInstance());
+	if (!rosinst) {
+		UE_LOG(LogTemp, Warning, TEXT("UROSIntegrationGameInstance is not set"));
+		return;
+	}
 	ImagePublisher = NewObject<UTopic>(UTopic::StaticClass());
 	ImagePublisher->Init(rosinst->ROSIntegrationCore, ImageTopicName, TEXT("sensor_msgs/Image"));
 	ImagePublisher->Advertise();
@@ -25,6 +29,9 @@ void UImagePub::BeginPlay()
 
 void UImagePub::Publish(int width, int height, uint8* data)
 {
+	if (!ImagePublisher)
+		return;
+
 	FROSTime time = FROSTime::Now();
 
 	TSharedPtr<ROSMessages::sensor_msgs::Image> imageMsg(new ROSMessages::sensor_msgs::Image());

@@ -8,6 +8,7 @@
 #include "Runtime/Engine/Classes/Engine/TextureRenderTarget2D.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "ImagePub.h"
+#include "TFPub.h"
 
 // important sort
 #include "OpenCVHelper.h"
@@ -51,4 +52,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UImagePub* ImagePub;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTFPub* TFPub;
 };
