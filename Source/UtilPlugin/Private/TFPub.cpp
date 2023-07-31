@@ -22,9 +22,9 @@ void UTFPub::BeginPlay()
 		return;
 	}
 
-	TFPublisher = NewObject<UTopic>(UTopic::StaticClass());
-	TFPublisher->Init(rosinst->ROSIntegrationCore, TFTopicName, TEXT("geometry_msgs/Transform"));
-	TFPublisher->Advertise();
+	// TFPublisher = NewObject<UTopic>(UTopic::StaticClass());
+	// TFPublisher->Init(rosinst->ROSIntegrationCore, TFTopicName, TEXT("geometry_msgs/Transform"));
+	// TFPublisher->Advertise();
 	LocPublisher = NewObject<UTopic>(UTopic::StaticClass());
 	LocPublisher->Init(rosinst->ROSIntegrationCore, LocTopicName, TEXT("geometry_msgs/Vector3"));
 	LocPublisher->Advertise();
@@ -35,7 +35,7 @@ void UTFPub::BeginPlay()
 
 void UTFPub::Publish()
 {
-	if (!TFPublisher)
+	if (!LocPublisher)
 		return;
 
 	FVector location = OwnerActor->GetActorLocation();

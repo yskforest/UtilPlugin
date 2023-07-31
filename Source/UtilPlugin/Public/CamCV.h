@@ -9,6 +9,7 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "ImagePub.h"
 #include "TFPub.h"
+#include "PosePub.h"
 
 // important sort
 #include "OpenCVHelper.h"
@@ -54,4 +55,6 @@ public:
 	UImagePub* ImagePub;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTFPub* TFPub;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPosePub* PosePub;
 };
