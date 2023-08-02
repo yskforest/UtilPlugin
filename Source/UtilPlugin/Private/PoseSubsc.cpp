@@ -20,17 +20,22 @@ void APoseSubsc::BeginPlay()
 		return;
 	}
 	PoseSubscliber = NewObject<UTopic>(UTopic::StaticClass());
-	PoseSubscliber->Init(rosinst->ROSIntegrationCore, SubscTopicName, TEXT("sensor_msgs/PoseStamped"));
+	PoseSubscliber->Init(rosinst->ROSIntegrationCore, SubscTopicName, TEXT("geometry_msgs/PoseStamped"));
 
 	// Create a std::function callback object
 	std::function<void(TSharedPtr<FROSBaseMsg>)> SubscribeCallback = [](TSharedPtr<FROSBaseMsg> msg) -> void {
 		auto Concrete = StaticCastSharedPtr<ROSMessages::geometry_msgs::PoseStamped>(msg);
 		if (Concrete.IsValid()) {
-			float x = Concrete->pose.position.x;
-			float y = Concrete->pose.position.y;
-			float z = Concrete->pose.position.z;
+			float x = Concrete->pose.position.x * 100;
+			float y = Concrete->pose.position.y * -100;
+			float z = Concrete->pose.position.z * 100;
 
-			UE_LOG(LogTemp, Log, TEXT("recv pose: %f, %f, %f"), z, y, z);
+			float rx = -Concrete->pose.orientation.x;
+			float ry = Concrete->pose.orientation.y;
+			float rz = -Concrete->pose.orientation.z;
+			float rw = Concrete->pose.orientation.w;
+
+			UE_LOG(LogTemp, Log, TEXT("recv pose: %f, %f, %f, %f, %f, %f, %f"), z, y, z, rx, ry, rz, rw);
 		}
 		return;
 	};
