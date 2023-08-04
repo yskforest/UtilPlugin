@@ -1,22 +1,17 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "CamCV.h"
 
-// Sets default values
 ACamCV::ACamCV()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	if (!RootComponent)
 		RootComponent = CreateDefaultSubobject<USceneComponent>("Root");
 
-    ImagePub = CreateDefaultSubobject<UImagePub>(TEXT("ImagePub"));
+	ImagePub = CreateDefaultSubobject<UImagePub>(TEXT("ImagePub"));
 	// TFPub = CreateDefaultSubobject<UTFPub>(TEXT("TFPub"));
 	PosePub = CreateDefaultSubobject<UPosePub>(TEXT("PosePub"));
 }
 
-// Called when the game starts or when spawned
 void ACamCV::BeginPlay()
 {
 	Super::BeginPlay();
@@ -37,14 +32,15 @@ void ACamCV::BeginPlay()
 	SC_Front->TextureTarget = RT_Front;
 	SC_Front->UpdateContent();
 
-	TextureCV = UTexture2D::CreateTransient(w, h, EPixelFormat::PF_B8G8R8A8);
+	if (!TextureCV) {
+		TextureCV = UTexture2D::CreateTransient(w, h, EPixelFormat::PF_B8G8R8A8);
+	}
 #if WITH_EDITORONLY_DATA
 	TextureCV->MipGenSettings = TMGS_NoMipmaps;
 #endif
 	TextureCV->SRGB = RT_Front->SRGB;
 }
 
-// Called every frame
 void ACamCV::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -68,11 +64,12 @@ void ACamCV::Tick(float DeltaTime)
 			FString path = FPaths::ProjectSavedDir() + "/" + FString::FromInt(FrameCount) + ".png";
 			cv::imwrite(TCHAR_TO_UTF8(*path), front);
 		}
-		FrameCount += 1;
 
-		ImagePub->Publish(w, h, front.data);
-		// TFPub->Publish();
-		PosePub->Publish();
+		if (bRosPublish) {
+			ImagePub->Publish(VideoSize.X, VideoSize.Y, front.data);
+			// TFPub->Publish();
+			PosePub->Publish();
+		}
 
 		// UE_5.2\Engine\Plugins\Runtime\OpenCV\Source\OpenCVHelper\Private\OpenCVHelper.cpp
 		// FOpenCVHelper::TextureFromCvMat(front, TextureCV);
@@ -82,5 +79,7 @@ void ACamCV::Tick(float DeltaTime)
 		FMemory::Memcpy(TextureData, front.data, front.cols * front.rows * SIZE_T(PixelStride));
 		Mip0.BulkData.Unlock();
 		TextureCV->UpdateResource();
+
+		FrameCount += 1;
 	}
 }

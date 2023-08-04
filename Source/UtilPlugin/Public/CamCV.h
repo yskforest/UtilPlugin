@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -25,31 +23,23 @@ class UTILPLUGIN_API ACamCV : public AActor
 {
 	GENERATED_BODY()
 
-private:
-	// UTexture2D* TexFromCvMat(cv::Mat& Mat, UTexture2D* InTexture);
-	TArray<FColor> ColorDataFront;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
 public:
 	ACamCV();
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneCaptureComponent2D* SC_Front;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTextureRenderTarget2D* RT_Front;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UMaterialInstanceDynamic* MaterialInstanceDynamic;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool bSaveImage = false;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FVector2D VideoSize = FVector2D(1920, 1080);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* TextureCV = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bSaveImage = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bRosPublish = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector2D VideoSize = FVector2D(1920, 1080);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UImagePub* ImagePub;
@@ -57,4 +47,12 @@ public:
 	UTFPub* TFPub;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPosePub* PosePub;
+
+protected:
+	virtual void BeginPlay() override;
+
+private:
+	// privateにしないとEditor実行時にアウトライナから確認すると落ちるかも
+	TArray<FColor> ColorDataFront;
+	UTextureRenderTarget2D* RT_Front;
 };
