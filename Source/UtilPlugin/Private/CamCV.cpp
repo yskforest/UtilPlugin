@@ -21,6 +21,7 @@ void ACamCV::BeginPlay()
 	int h = VideoSize.Y;
 	RT_Front->InitCustomFormat(w, h, EPixelFormat::PF_B8G8R8A8, false);
 	RT_Front->RenderTargetFormat = ETextureRenderTargetFormat::RTF_RGBA8;
+	RT_Front->bGPUSharedFlag = true;
 	RT_Front->UpdateResource();
 
 	SC_Front = NewObject<USceneCaptureComponent2D>(this);
@@ -33,7 +34,7 @@ void ACamCV::BeginPlay()
 	SC_Front->UpdateContent();
 
 	if (!TextureCV) {
-		TextureCV = UTexture2D::CreateTransient(w, h, EPixelFormat::PF_B8G8R8A8);
+		TextureCV = UTexture2D::CreateTransient(w, h, EPixelFormat::PF_B8G8R8A8, FName("RuntimeTextureCV"));
 	}
 #if WITH_EDITORONLY_DATA
 	TextureCV->MipGenSettings = TMGS_NoMipmaps;
@@ -53,7 +54,7 @@ void ACamCV::Tick(float DeltaTime)
 	if (RefreshTimer >= 1.0f / RefreshRate) {
 		RefreshTimer -= 1.0f / RefreshRate;
 
-		FRenderTarget* rtFront = RT_Front->GameThread_GetRenderTargetResource();
+		FTextureRenderTargetResource* rtFront = RT_Front->GameThread_GetRenderTargetResource();
 		int w = rtFront->GetSizeXY().X;
 		int h = rtFront->GetSizeXY().Y;
 		rtFront->ReadPixels(ColorDataFront);

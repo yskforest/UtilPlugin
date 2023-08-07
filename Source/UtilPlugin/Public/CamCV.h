@@ -5,6 +5,7 @@
 #include "Runtime/Engine/Classes/Engine/Texture2D.h"
 #include "Runtime/Engine/Classes/Engine/TextureRenderTarget2D.h"
 #include "Components/SceneCaptureComponent2D.h"
+#include "RHICommandList.h"
 #include "ImagePub.h"
 #include "TFPub.h"
 #include "PosePub.h"
@@ -12,8 +13,10 @@
 // important sort
 #include "OpenCVHelper.h"
 #include "PreOpenCVHeaders.h"
-#include <opencv2/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include "opencv2/core.hpp"
+#include "opencv2/imgcodecs.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
 #include "PostOpenCVHeaders.h"
 
 #include "CamCV.generated.h"
