@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include <UObject/ObjectMacros.h>
+#include <UObject/Object.h>
 
 #include "ROSIntegration/Classes/RI/Topic.h"
 #include "ROSIntegration/Classes/ROSIntegrationGameInstance.h"
@@ -19,12 +21,23 @@ class UTILPLUGIN_API APoseSubsc : public AActor
 public:
 	APoseSubsc();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ROS")
+	UFUNCTION(BlueprintImplementableEvent, Category = ROS)
+	void OnPoseMessage(const FVector& location, const FQuat& quat);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ROS)
 	FString SubscTopicName = TEXT("/pose");
-	UPROPERTY(Transient, EditAnywhere, Category = "ROS")
+	UPROPERTY(Transient, EditAnywhere, Category = ROS)
 	UTopic* PoseSubscliber;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ROS)
+	FVector RecvLocation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ROS)
+	FRotator RecvRotator;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+private:
+	void SetPose(const FVector& position, const FVector4& orientation);
 };

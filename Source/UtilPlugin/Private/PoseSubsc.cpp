@@ -22,23 +22,28 @@ void APoseSubsc::BeginPlay()
 	PoseSubscliber = NewObject<UTopic>(UTopic::StaticClass());
 	PoseSubscliber->Init(rosinst->ROSIntegrationCore, SubscTopicName, TEXT("geometry_msgs/PoseStamped"));
 
-	// Create a std::function callback object
-	std::function<void(TSharedPtr<FROSBaseMsg>)> SubscribeCallback = [](TSharedPtr<FROSBaseMsg> msg) -> void {
-		auto Concrete = StaticCastSharedPtr<ROSMessages::geometry_msgs::PoseStamped>(msg);
-		if (Concrete.IsValid()) {
-			float x = Concrete->pose.position.x * 100;
-			float y = Concrete->pose.position.y * -100;
-			float z = Concrete->pose.position.z * 100;
+	std::function<void(TSharedPtr<FROSBaseMsg>)> SubscribeCallback = [this](TSharedPtr<FROSBaseMsg> msg) -> void {
+		auto ConcreteVectorMessage = StaticCastSharedPtr<ROSMessages::geometry_msgs::PoseStamped>(msg);
+		if (ConcreteVectorMessage.IsValid()) {
+			const auto p = ConcreteVectorMessage->pose.position;
+			const auto q = ConcreteVectorMessage->pose.orientation;
+			// UE_LOG(LogTemp, Log, TEXT("recv pose: %f, %f, %f"), p.x, p.y, p.z);
+			// convert ROS -> UE coord
+			const FVector position(p.x * 100, p.y * -100, p.z * 100);
+			const FQuat orientation(-q.x, q.y, -q.z, q.w);
 
-			float rx = -Concrete->pose.orientation.x;
-			float ry = Concrete->pose.orientation.y;
-			float rz = -Concrete->pose.orientation.z;
-			float rw = Concrete->pose.orientation.w;
-
-			UE_LOG(LogTemp, Log, TEXT("recv pose: %f, %f, %f, %f, %f, %f, %f"), z, y, z, rx, ry, rz, rw);
+			AsyncTask(ENamedThreads::GameThread, [this, position, orientation]() {
+				OnPoseMessage(position, orientation);
+				// UE_LOG(LogTemp, Log, TEXT("async recv pose: %f, %f, %f"), position.X, position.Y, position.Z);
+			});
 		}
-		return;
 	};
 
 	PoseSubscliber->Subscribe(SubscribeCallback);
+}
+
+void APoseSubsc::SetPose(const FVector& position, const FVector4& orientation)
+{
+	RecvLocation = position;
+	RecvRotator.Pitch = orientation.Y;
 }
