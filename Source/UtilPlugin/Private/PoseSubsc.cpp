@@ -33,6 +33,8 @@ void APoseSubsc::BeginPlay()
 			const FQuat orientation(-q.x, q.y, -q.z, q.w);
 
 			AsyncTask(ENamedThreads::GameThread, [this, position, orientation]() {
+				RecvLocation = position;
+				RecvQuat = orientation;
 				OnPoseMessage(position, orientation);
 				// UE_LOG(LogTemp, Log, TEXT("async recv pose: %f, %f, %f"), position.X, position.Y, position.Z);
 			});
@@ -40,10 +42,4 @@ void APoseSubsc::BeginPlay()
 	};
 
 	PoseSubscliber->Subscribe(SubscribeCallback);
-}
-
-void APoseSubsc::SetPose(const FVector& position, const FVector4& orientation)
-{
-	RecvLocation = position;
-	RecvRotator.Pitch = orientation.Y;
 }

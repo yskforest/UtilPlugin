@@ -29,15 +29,15 @@ public:
 	UPROPERTY(Transient, EditAnywhere, Category = ROS)
 	UTopic* PoseSubscliber;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ROS)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ROS)
 	FVector RecvLocation;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ROS)
-	FRotator RecvRotator;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ROS)
+	FQuat RecvQuat;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 private:
-	void SetPose(const FVector& position, const FVector4& orientation);
+	// void SetPose(const FVector& position, const FVector4& orientation);
 };
