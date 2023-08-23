@@ -33,6 +33,8 @@ void ACamCV::BeginPlay()
 	SC_Front->TextureTarget = RT_Front;
 	SC_Front->UpdateContent();
 
+	ColorDataFront.AddDefaulted(VideoSize.X * VideoSize.Y);
+
 	if (!TextureCV) {
 		TextureCV = UTexture2D::CreateTransient(w, h, EPixelFormat::PF_B8G8R8A8, FName("RuntimeTextureCV"));
 	}
@@ -48,11 +50,11 @@ void ACamCV::Tick(float DeltaTime)
 
 	static float RefreshTimer = 0.0f;
 	static int FrameCount = 0;
-	float RefreshRate = 30.0f;
 
+	float SecPerFrame = 1.0f / RefreshRate;
 	RefreshTimer += DeltaTime;
-	if (RefreshTimer >= 1.0f / RefreshRate) {
-		RefreshTimer -= 1.0f / RefreshRate;
+	if (SecPerFrame <= RefreshTimer) {
+		RefreshTimer -= SecPerFrame;
 
 		FTextureRenderTargetResource* rtFront = RT_Front->GameThread_GetRenderTargetResource();
 		int w = rtFront->GetSizeXY().X;

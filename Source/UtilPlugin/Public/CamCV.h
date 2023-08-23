@@ -43,6 +43,8 @@ public:
 	bool bRosPublish = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D VideoSize = FVector2D(1920, 1080);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RefreshRate = 30.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UImagePub* ImagePub;
