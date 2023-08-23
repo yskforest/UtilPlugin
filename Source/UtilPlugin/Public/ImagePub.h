@@ -20,12 +20,11 @@ class UTILPLUGIN_API UImagePub : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UImagePub();
-
 	void Publish(int width, int height, uint8* data);
 
-	UPROPERTY(BlueprintReadWrite, Category = "ROS")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ROS")
 	FString ImageOpticalFrame = TEXT("/unreal_ros/image_optical_frame");
-	UPROPERTY(BlueprintReadWrite, Category = "ROS")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "ROS")
 	FString ImageTopicName = TEXT("/unreal_ros/image");
 	UPROPERTY(Transient, EditAnywhere, Category = "ROS")
 	UTopic* ImagePublisher;
