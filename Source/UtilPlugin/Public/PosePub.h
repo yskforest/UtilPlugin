@@ -19,6 +19,8 @@ class UTILPLUGIN_API UPosePub : public UActorComponent
 public:
 	// Sets default values for this component's properties
 	UPosePub();
+
+	UFUNCTION(BlueprintCallable)
 	void Publish();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ROS")
