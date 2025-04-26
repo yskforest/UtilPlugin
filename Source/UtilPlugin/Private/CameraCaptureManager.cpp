@@ -2,8 +2,7 @@
 
 #include "CameraCaptureManager.h"
 
-// #include "Engine.h"
-#include "Runtime/Engine/Classes/Engine/Engine.h"
+#include "Engine/Engine.h"
 
 #include "Engine/SceneCapture2D.h"
 #include "Components/SceneCaptureComponent2D.h"
@@ -15,8 +14,8 @@
 
 #include "RHICommandList.h"
 
-#include "ImageWrapper/Public/IImageWrapper.h"
-#include "ImageWrapper/Public/IImageWrapperModule.h"
+#include "IImageWrapper.h"
+#include "IImageWrapperModule.h"
 
 #include "ImageUtils.h"
 
